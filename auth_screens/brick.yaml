@@ -1,6 +1,6 @@
 name: auth_screens
-description: A Flutter authentication screens brick with customizable options
-version: 0.1.0
+description: A Flutter authentication screens brick with customizable options for login, signup, and forgot password screens
+version: 0.1.2
 
 vars:
   output_dir:
@@ -126,20 +126,30 @@ vars:
     default: Sign Up
     prompt: What should be the signup button text?
 
-  signup_fields:
-    type: array
-    description: List of signup fields
-    default:
-      - name: name
-        type: text
-        required: true
-      - name: email
-        type: email
-        required: true
-      - name: password
-        type: password
-        required: true
-    prompt: What fields do you want in the signup form?
+  # Signup Fields Configuration
+  enable_username_field:
+    type: boolean
+    description: Enable username field in signup form
+    default: true
+    prompt: Enable username field?
+
+  enable_email_field:
+    type: boolean
+    description: Enable email field in signup form
+    default: true
+    prompt: Enable email field?
+
+  enable_password_field:
+    type: boolean
+    description: Enable password field in signup form
+    default: true
+    prompt: Enable password field?
+
+  enable_phone_field:
+    type: boolean
+    description: Enable phone field in signup form
+    default: false
+    prompt: Enable phone field?
 
   # Forgot Password Options
   show_forgot_password_popup:
@@ -152,4 +162,6 @@ vars:
     type: string
     description: Forgot password button text
     default: Reset Password
-    prompt: What should be the forgot password button text? 
+    prompt: What should be the forgot password button text?
+
+repository: https://github.com/NadeemIqbal/mason_login_signup 

@@ -1,0 +1,166 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/auth_bloc.dart';
+import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
+import '../templates/auth_template.dart';
+import '../utils/field_validator.dart';
+
+class SignupScreen extends StatelessWidget {
+  final AuthTemplate template;
+
+  const SignupScreen({
+    Key? key,
+    required this.template,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Scaffold(
+      appBar: template.showSignupAppBar
+          ? AppBar(
+              title: Text('Sign Up'),
+            )
+          : null,
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: theme.colorScheme.error,
+              ),
+            );
+          }
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Create Account',
+                style: theme.textTheme.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              _SignupForm(
+                template: template,
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Already have an account? Login'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SignupForm extends StatefulWidget {
+  final AuthTemplate template;
+
+  const _SignupForm({
+    Key? key,
+    required this.template,
+  }) : super(key: key);
+
+  @override
+  State<_SignupForm> createState() => _SignupFormState();
+}
+
+class _SignupFormState extends State<_SignupForm> {
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, TextEditingController> _controllers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    for (final field in widget.template.signupFields) {
+      _controllers[field.name] = TextEditingController();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _controllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          ...widget.template.signupFields.map((field) {
+            return Column(
+              children: [
+                TextFormField(
+                  controller: _controllers[field.name],
+                  decoration: InputDecoration(
+                    labelText: field.name.toUpperCase(),
+                    hintText: 'Enter your ${field.name}',
+                  ),
+                  keyboardType: _getKeyboardType(field.type),
+                  obscureText: field.type == FieldType.password,
+                  maxLines: field.type == FieldType.multiline ? null : 1,
+                  validator: (value) => FieldValidator.validateField(
+                    value ?? '',
+                    field,
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            );
+          }).toList(),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                final Map<String, String> formData = {};
+                for (final field in widget.template.signupFields) {
+                  formData[field.name] = _controllers[field.name]!.text;
+                }
+                context.read<AuthBloc>().add(
+                      SignupRequested(
+                        name: formData['name'] ?? '',
+                        email: formData['email'] ?? '',
+                        password: formData['password'] ?? '',
+                      ),
+                    );
+              }
+            },
+            child: Text(widget.template.signupSubmitButtonText),
+          ),
+        ],
+      ),
+    );
+  }
+
+  TextInputType _getKeyboardType(FieldType type) {
+    switch (type) {
+      case FieldType.email:
+        return TextInputType.emailAddress;
+      case FieldType.phone:
+        return TextInputType.phone;
+      case FieldType.number:
+        return TextInputType.number;
+      case FieldType.url:
+        return TextInputType.url;
+      case FieldType.multiline:
+        return TextInputType.multiline;
+      default:
+        return TextInputType.text;
+    }
+  }
+} 

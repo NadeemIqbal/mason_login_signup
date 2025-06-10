@@ -1,0 +1,83 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/screens/auth_screen.dart';
+import 'features/auth/domain/usecases/login_usecase.dart';
+import 'features/auth/domain/usecases/signup_usecase.dart';
+import 'features/auth/domain/usecases/reset_password_usecase.dart';
+import 'features/auth/data/repositories/auth_repository_impl.dart';
+import 'features/auth/presentation/templates/auth_template.dart';
+{{#if use_go_router}}
+import 'package:go_router/go_router.dart';
+{{/if}}
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final template = AuthTemplate(
+      showLoginAppBar: {{show_login_appbar}},
+      showForgotPassword: {{show_forgot_password}},
+      loginSubmitButtonText: {{login_button_text}},
+      showSignupAppBar: {{show_signup_appbar}},
+      signupSubmitButtonText: {{signup_button_text}},
+      signupFields: {{signup_fields}},
+      showForgotPasswordPopup: {{show_forgot_password_popup}},
+      forgotPasswordSubmitButtonText: {{forgot_password_button_text}},
+    );
+
+    final authBloc = AuthBloc(
+      loginUseCase: LoginUseCase(AuthRepositoryImpl()),
+      signupUseCase: SignupUseCase(AuthRepositoryImpl()),
+      resetPasswordUseCase: ResetPasswordUseCase(AuthRepositoryImpl()),
+    );
+
+    {{#if use_go_router}}
+    final router = GoRouter(
+      initialLocation: {{initial_route}},
+      routes: [
+        {{#if auth_route}}
+        GoRoute(
+          path: '{{auth_route}}',
+          builder: (context, state) => AuthScreen(template: template),
+        ),
+        {{/if}}
+        // Add other routes here
+      ],
+    );
+
+    return BlocProvider.value(
+      value: authBloc,
+      child: MaterialApp.router(
+        title: {{app_name}},
+        routerConfig: router,
+      ),
+    );
+    {{else}}
+    return BlocProvider.value(
+      value: authBloc,
+      child: MaterialApp(
+        title: {{app_name}},
+        {{#if use_auth_as_home}}
+        home: AuthScreen(
+          template: template,
+        ),
+        {{else}}
+        initialRoute: {{initial_route}},
+        routes: {
+          {{#if auth_route}}
+          '{{auth_route}}': (context) => AuthScreen(template: template),
+          {{/if}}
+          // Add other routes here
+        },
+        {{/if}}
+      ),
+    );
+    {{/if}}
+  }
+} 

@@ -1,0 +1,155 @@
+name: auth_screens
+description: A Flutter authentication screens brick with customizable options
+version: 0.1.0
+
+vars:
+  output_dir:
+    type: string
+    description: Where should we add the auth screens?
+    default: lib/features/auth
+    prompt: Where should we add the auth screens? (e.g., lib/features/auth)
+
+  app_name:
+    type: string
+    description: The name of your application
+    default: My App
+    prompt: What is the name of your application?
+
+  # Brand Image Options
+  show_brand_image:
+    type: boolean
+    description: Show brand image in auth screens
+    default: true
+    prompt: Would you like to show a brand image in the auth screens?
+
+  brand_image_path:
+    type: string
+    description: Path to the brand image asset
+    default: "assets/images/logo.png"
+    prompt: What is the path to your brand image? (e.g., assets/images/logo.png)
+
+  brand_image_height:
+    type: number
+    description: Height of the brand image
+    default: 120
+    prompt: What should be the height of the brand image? (in pixels)
+
+  brand_image_width:
+    type: number
+    description: Width of the brand image
+    default: 120
+    prompt: What should be the width of the brand image? (in pixels)
+
+  brand_image_fit:
+    type: enum
+    description: How the brand image should fit within its bounds
+    default: contain
+    values:
+      - contain
+      - cover
+      - fill
+      - fitWidth
+      - fitHeight
+      - none
+      - scaleDown
+    prompt: How should the brand image fit within its bounds?
+
+  brand_image_alignment:
+    type: enum
+    description: Alignment of the brand image
+    default: center
+    values:
+      - center
+      - topLeft
+      - topCenter
+      - topRight
+      - centerLeft
+      - centerRight
+      - bottomLeft
+      - bottomCenter
+      - bottomRight
+    prompt: How should the brand image be aligned?
+
+  brand_image_margin:
+    type: number
+    description: Margin around the brand image
+    default: 16
+    prompt: What should be the margin around the brand image? (in pixels)
+
+  brand_image_padding:
+    type: number
+    description: Padding inside the brand image container
+    default: 8
+    prompt: What should be the padding inside the brand image container? (in pixels)
+
+  brand_image_background_color:
+    type: string
+    description: Background color behind the brand image
+    default: "transparent"
+    prompt: What should be the background color behind the brand image? (hex code or transparent)
+
+  brand_image_border_radius:
+    type: number
+    description: Border radius of the brand image container
+    default: 0
+    prompt: What should be the border radius of the brand image container? (in pixels)
+
+  # Login Page Options
+  show_login_appbar:
+    type: boolean
+    description: Show app bar in login screen
+    default: true
+    prompt: Show app bar in login screen?
+
+  show_forgot_password:
+    type: boolean
+    description: Show forgot password option
+    default: true
+    prompt: Show forgot password option?
+
+  login_button_text:
+    type: string
+    description: Login button text
+    default: Login
+    prompt: What should be the login button text?
+
+  # Signup Page Options
+  show_signup_appbar:
+    type: boolean
+    description: Show app bar in signup screen
+    default: true
+    prompt: Show app bar in signup screen?
+
+  signup_button_text:
+    type: string
+    description: Signup button text
+    default: Sign Up
+    prompt: What should be the signup button text?
+
+  signup_fields:
+    type: array
+    description: List of signup fields
+    default:
+      - name: name
+        type: text
+        required: true
+      - name: email
+        type: email
+        required: true
+      - name: password
+        type: password
+        required: true
+    prompt: What fields do you want in the signup form?
+
+  # Forgot Password Options
+  show_forgot_password_popup:
+    type: boolean
+    description: Show forgot password as popup
+    default: true
+    prompt: Show forgot password as popup?
+
+  forgot_password_button_text:
+    type: string
+    description: Forgot password button text
+    default: Reset Password
+    prompt: What should be the forgot password button text? 
